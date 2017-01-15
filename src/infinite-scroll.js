@@ -85,13 +85,12 @@ angular.module(MODULE_NAME, [])
         if (shouldScroll) {
           checkWhenEnabled = true;
 
-          if (scrollEnabled) {
-            if (scope.$$phase || $rootScope.$$phase) {
-              scope.infiniteScroll();
-            } else {
-              scope.$apply(scope.infiniteScroll);
-            }
-          }
+	        if (scope.$$phase || $rootScope.$$phase) {
+	          scope.infiniteScroll();
+	        } else {
+	          scope.$apply(scope.infiniteScroll);
+	        }
+            
         } else {
           if (checkInterval) { $interval.cancel(checkInterval); }
           checkWhenEnabled = false;
