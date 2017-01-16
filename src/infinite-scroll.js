@@ -5,8 +5,8 @@ const MODULE_NAME = 'infinite-scroll';
 angular.module(MODULE_NAME, [])
   .value('THROTTLE_MILLISECONDS', null)
   .directive('infiniteScroll', [
-    '$rootScope', '$window', '$interval', 'THROTTLE_MILLISECONDS',
-    ($rootScope, $window, $interval, THROTTLE_MILLISECONDS) =>
+    '$rootScope', '$window', '$timeout', 'THROTTLE_MILLISECONDS',
+    ($rootScope, $window, $timeout, THROTTLE_MILLISECONDS) =>
   ({
     scope: {
       infiniteScroll: '&',
@@ -92,7 +92,7 @@ angular.module(MODULE_NAME, [])
 	        }
             
         } else {
-          if (checkInterval) { $interval.cancel(checkInterval); }
+          if (checkInterval) { $timeout.cancel(checkInterval); }
           checkWhenEnabled = false;
         }
       }
@@ -109,7 +109,7 @@ angular.module(MODULE_NAME, [])
 
         function later() {
           previous = new Date().getTime();
-          $interval.cancel(timeout);
+          H.cancel(timeout);
           timeout = null;
           return func.call();
         }
@@ -118,12 +118,12 @@ angular.module(MODULE_NAME, [])
           const now = new Date().getTime();
           const remaining = wait - (now - previous);
           if (remaining <= 0) {
-            $interval.cancel(timeout);
+            $timeout.cancel(timeout);
             timeout = null;
             previous = now;
             func.call();
           } else if (!timeout) {
-            timeout = $interval(later, remaining, 1);
+            timeout = $timeout(later, remaining, 1);
           }
         }
 
@@ -141,7 +141,7 @@ angular.module(MODULE_NAME, [])
           unregisterEventListener = null;
         }
         if (checkInterval) {
-          $interval.cancel(checkInterval);
+          $timeout.cancel(checkInterval);
         }
       }
 
@@ -257,10 +257,10 @@ angular.module(MODULE_NAME, [])
         if (immediateCheck) {
           handler();
         }
-        return $interval.cancel(checkInterval);
+        return $timeout.cancel(checkInterval);
       }
 
-      checkInterval = $interval(intervalCheck);
+      checkInterval = $timeout(intervalCheck);
       return checkInterval;
     },
   }),
